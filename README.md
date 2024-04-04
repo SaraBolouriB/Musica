@@ -1,23 +1,13 @@
-## Things to be explained in the course:
-1. What is Ledger? More details here: https://internetcomputer.org/docs/current/developer-docs/integrations/ledger/
-2. What is Internet Identity? More details here: https://internetcomputer.org/internet-identity
-3. What is Principal, Identity, Address? https://internetcomputer.org/internet-identity | https://yumimarketplace.medium.com/whats-the-difference-between-principal-id-and-account-id-3c908afdc1f9
-4. Canister-to-canister communication and how multi-canister development is done? https://medium.com/icp-league/explore-backend-multi-canister-development-on-ic-680064b06320
-
-## Getting started
-
-To get started developing in the browser, click this button:
-
-[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/dacadeorg/icp-azle-201)
-
-If you rather want to use GitHub Codespaces, click this button instead:
-
-[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/dacadeorg/icp-azle-201?quickstart=1)
-
-**NOTE**: After deploying your canisters in GitHub Codespaces, run `./canister_urls.py` and click the links that are shown there.
-
-If you prefer running VS Code locally and not in the browser, click "Codespaces: ..." or "Gitpod" in the bottom left corner and select "Open in VS Code" in the menu that appears. 
-If prompted, proceed by installing the recommended plugins for VS Code.
+### Musica Application
+## Introduction
+As crafting music is an artistic endeavor demanding significant time and effort, singers must receive rewards. The Musica app offers a platform for singers to market their music. Within this platform, singers can share their music while listeners have the opportunity to hear each track once, offer feedback, and express their approval by liking it. However, to download or listen to the music multiple times, payment is required. In summary, this application offers these features:
+- Create, remove, or modify a piece of music.
+- Post, remove, or modify a comment.
+- Express approval for music, or withdraw approval.
+- Stream each musical piece once.
+- Make a payment for downloading the music.
+  
+## How to run
 
 To develop fully locally, first install [Docker](https://www.docker.com/get-started/) and [VS Code](https://code.visualstudio.com/) and start them on your machine.
 Next, click the following button to open the dev container locally:

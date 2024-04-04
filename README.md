@@ -29,12 +29,14 @@ Next, run shell files to deploy canisters step by step:
 ## How to test
 To test developed APIs, you can call APIs directly in the terminal or use Postman application on your desktop:
 - By the terminal (Communicate with your canister using any HTTP client library, for example using curl):
-	- GET request: `curl http://[canisterId].localhost:8000/db`
-	- POST, PUT, and DELETE requests: `curl -X POST -H "Content-Type: application/json" -d "{ \"hello\": \"world\" }" http://[canisterId].localhost:8000/db/update`
+	- **GET request:** `curl http://[canisterId].localhost:8000/db`
+	- **POST, PUT, and DELETE requests:** `curl -X POST -H "Content-Type: application/json" -d "{ \"hello\": \"world\" }" http://[canisterId].localhost:8000/db/update`
 
 - By Postman:
-  	- GET request:
-  	  ![image]![Screenshot from 2024-04-04 15-43-07](https://github.com/SaraBolouriB/Musica/assets/45979215/f8cc2ac0-3aa6-437b-8457-e52ff1ea4f50)
-  	- POST, PUT, DELETE requests:
-  	  ![image]![Screenshot from 2024-04-04 15-46-29](https://github.com/SaraBolouriB/Musica/assets/45979215/e11fc094-7987-4201-9809-500350c59911)
+  	- **GET request:**
+  	  ![Screenshot from 2024-04-04 15-43-07](https://github.com/SaraBolouriB/Musica/assets/45979215/f8cc2ac0-3aa6-437b-8457-e52ff1ea4f50)
+  	- **POST, PUT, DELETE requests:**
+  	  ![Screenshot from 2024-04-04 15-49-02](https://github.com/SaraBolouriB/Musica/assets/45979215/36108040-7b70-4e84-8158-aa51831e1e41)
+
+
 

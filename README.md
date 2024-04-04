@@ -27,7 +27,7 @@ Next, run shell files to deploy canisters step by step:
 - `dfx deploy dfinity_js_frontend` - Frontend canister
 
 ## How to test
-To test developed APIs, you can call APIs directly in the terminal or use Postman application on your desktop:
+To test developed APIs, you can call APIs directly in the terminal or use Postman application on your desktop. You can find canister by running `caniser_urls.py` file.
 - By the terminal (Communicate with your canister using any HTTP client library, for example using curl):
 	- **GET request:** `curl http://[canisterId].localhost:8000/db`
 	- **POST, PUT, and DELETE requests:** `curl -X POST -H "Content-Type: application/json" -d "{ \"hello\": \"world\" }" http://[canisterId].localhost:8000/db/update`

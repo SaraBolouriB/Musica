@@ -91,7 +91,7 @@ export default Server(() => {
     });
 
     // Delete the music
-    app.delete('removemusic/:id', (req, res) => {
+    app.delete('/removemusic/:id', (req, res) => {
         const musicID = req.params.id;
         const musicOpt = musicStorage.get(musicID);
 
@@ -104,7 +104,7 @@ export default Server(() => {
     });
 
     // Modify the music
-    app.put('editmusic/:id', (req, res) => {
+    app.put('/editmusic/:id', (req, res) => {
         const musicID = req.params.id;
         const musicOpt = musicStorage.get(musicID);
 
@@ -272,6 +272,7 @@ export default Server(() => {
             let findLike = music.likes.find((id) => id === ownerID);
             if (findLike === undefined) {
                 res.status(400).send(`The like does not exist.`);
+                return;
             } 
             
             const index = music.likes.indexOf(ownerID);
@@ -336,6 +337,7 @@ export default Server(() => {
 
         if ('None' in musicOpt) {
             res.status(404).send(`The music with id ${req.body.musicId} not found.`);
+            return;
         } else {
             const music = musicOpt.Some;
             const allowanceResponse = await allowanceTransfer(music.owner, BigInt(music.price));

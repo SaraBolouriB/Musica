@@ -3,7 +3,6 @@ import express from 'express';
 import { v4 as uuidv4 } from 'uuid';
 import cors from 'cors';
 import { hexAddressFromPrincipal } from "azle/canisters/ledger";
-import multer from 'multer';
 
 class Music {
     id: string;

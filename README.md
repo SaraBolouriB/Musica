@@ -1,4 +1,4 @@
-### Musica Application
+# Musica Application
 ## Introduction
 As crafting music is an artistic endeavor demanding significant time and effort, singers must receive rewards. The Musica app offers a platform for singers to market their music. Within this platform, singers can share their music while listeners have the opportunity to hear each track once, offer feedback, and express their approval by liking it. However, to download or listen to the music multiple times, payment is required. In summary, this application offers these features:
 - Create, remove, or modify a piece of music.
@@ -8,11 +8,9 @@ As crafting music is an artistic endeavor demanding significant time and effort,
 - Make a payment for downloading the music.
   
 ## How to run
-
 To develop fully locally, first install [Docker](https://www.docker.com/get-started/) and [VS Code](https://code.visualstudio.com/) and start them on your machine.
-Next, click the following button to open the dev container locally:
-
-[![Open locally in Dev Containers](https://img.shields.io/static/v1?label=Dev%20Containers&message=Open&color=blue&logo=visualstudiocode)](https://vscode.dev/redirect?url=vscode://ms-vscode-remote.remote-containers/cloneInVolume?url=https://github.com/dacadeorg/icp-azle-201)
+Next, open the terminal and launch docker desktop:
+`systemctl --user start docker-desktop`
 
 ## How to deploy canisters implemented in the course
 

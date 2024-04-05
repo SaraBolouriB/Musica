@@ -5,43 +5,43 @@ import cors from 'cors';
 import { hexAddressFromPrincipal } from "azle/canisters/ledger";
 
 class Music {
-    id: string;
-    owner: string;
-    soldNumber: number;
-    likeNumber: number;
-    likes : string[];
-    comments: string[];
-    whoslisten: string[];
-    audio: blob;
-    name: string;
-    description: string;
-    price: number;
+   id: string;
+   owner: string;
+   soldNumber: number;
+   likeNumber: number;
+   likes: string[];
+   comments: string[];
+   whoslisten: string[];
+   audio: blob;
+   name: string;
+   description: string;
+   price: number;
 }
 
 class MusicPayload {
-    audio: blob;
-    name: string;
-    description: string;
-    price: number;
+   audio: blob;
+   name: string;
+   description: string;
+   price: number;
 }
 
 class Comment {
-    id: string;
-    description: string;
-    owner: string;
-    musicID: string;
+   id: string;
+   description: string;
+   owner: string;
+   musicID: string;
 }
 
 class Order {
-    musictId: string;
-    musicOwner: string;
-    price: number;
-    status: OrderStatus;
+   musictId: string;
+   musicOwner: string;
+   price: number;
+   status: OrderStatus;
 }
 
 enum OrderStatus {
-    PaymentPending,
-    Completed
+   PaymentPending,
+   Completed
 }
 
 const musicStorage = StableBTreeMap<string, Music>(0);
@@ -51,201 +51,201 @@ const orderStorage = StableBTreeMap<string, Order>(2);
 const ICRC_CANISTER_PRINCIPAL = "mxzaz-hqaaa-aaaar-qaada-cai";
 
 export default Server(() => {
-    const app = express();
-    app.use(cors());
-    app.use(express.json());
+   const app = express();
+   app.use(cors());
+   app.use(express.json());
 
-    // Retrieve all musics
-    app.get("/musics", (req, res) => {
-        res.json(musicStorage.values());
-    });
+   // Retrieve all musics
+   app.get("/musics", (req, res) => {
+       res.json(musicStorage.values());
+   });
 
-    // Retrieve music with a specific ID
-    app.get("/music/:id", (req, res) => {
-        const musicID = req.params.id;
-        const musicOpt = musicStorage.get(musicID);
+   // Retrieve music with a specific ID
+   app.get("/music/:id", (req, res) => {
+       const musicID = req.params.id;
+       const musicOpt = musicStorage.get(musicID);
 
-        if ('None' in musicOpt) {
-            res.status(404).send(`The music with id ${musicID} not found.`);
-        } else {
-            res.json(musicOpt.Some);
-        }
-    });
-    
-    // Add new music to Musica application
-    app.post('/addmusic', async (req, res) => {
-        const payload = req.body as MusicPayload;
-        const music = {
-            id: uuidv4(), 
-            owner: ic.caller().toText(),
-            soldNumber: 0,
-            likeNumber: 0,
-            likes: [],
-            comments: [],
-            whoslisten: [],
-            ...payload
-        };
-        musicStorage.insert(music.id, music);
-        return res.json(music);
-    });
+       if ('None' in musicOpt) {
+           res.status(404).send(`The music with id ${musicID} not found.`);
+       } else {
+           res.json(musicOpt.Some);
+       }
+   });
+   
+   // Add new music to Musica application
+   app.post('/addmusic', async (req, res) => {
+       const payload = req.body as MusicPayload;
+       const music = {
+           id: uuidv4(), 
+           owner: ic.caller().toText(),
+           soldNumber: 0,
+           likeNumber: 0,
+           likes: [],
+           comments: [],
+           whoslisten: [],
+           ...payload
+       };
+       musicStorage.insert(music.id, music);
+       return res.json(music);
+   });
 
-    // Delete the music
-    app.delete('/removemusic/:id', (req, res) => {
-        const musicID = req.params.id;
-        const musicOpt = musicStorage.get(musicID);
+   // Delete the music
+   app.delete('/removemusic/:id', (req, res) => {
+       const musicID = req.params.id;
+       const musicOpt = musicStorage.get(musicID);
 
-        if('None' in musicOpt) {
-            res.status(404).send(`This music with id ${musicID} not found.`);
-        } else {
-            musicStorage.remove(musicID);
-            return res.json(musicOpt.Some);
-        }
-    });
+       if('None' in musicOpt) {
+           res.status(404).send(`This music with id ${musicID} not found.`);
+       } else {
+           musicStorage.remove(musicID);
+           return res.json(musicOpt.Some);
+       }
+   });
 
-    // Modify the music
-    app.put('/editmusic/:id', (req, res) => {
-        const musicID = req.params.id;
-        const musicOpt = musicStorage.get(musicID);
+   // Modify the music
+   app.put('/editmusic/:id', (req, res) => {
+       const musicID = req.params.id;
+       const musicOpt = musicStorage.get(musicID);
 
-        if('None' in musicOpt) {
-            res.status(404).send(`This music with id ${musicID} not found.`);
-        } else {
-            const music = musicOpt.Some;
-            const editedMusic = req.body;
+       if('None' in musicOpt) {
+           res.status(404).send(`This music with id ${musicID} not found.`);
+       } else {
+           const music = musicOpt.Some;
+           const editedMusic = req.body;
 
-            const updatedMusic = {
-                ...music,
-                ...editedMusic
-            }
+           const updatedMusic = {
+               ...music,
+               ...editedMusic
+           }
 
-            musicStorage.insert(music.id, updatedMusic);
-            return res.json(updatedMusic);
-        }
-    });
+           musicStorage.insert(music.id, updatedMusic);
+           return res.json(updatedMusic);
+       }
+   });
 
-    // Retrieve all comments of a specific music
-    app.get("/comments/:id", (req, res) => {
-        const musicID = req.params.id;
-        const musicOpt = musicStorage.get(musicID);
+   // Retrieve all comments of a specific music
+   app.get("/comments/:id", (req, res) => {
+       const musicID = req.params.id;
+       const musicOpt = musicStorage.get(musicID);
 
-        if('None' in musicOpt) {
-            res.status(404).send(`This music with id ${musicID} not found.`);
-        } else {
-            const commentsID = musicOpt.Some.comments;
-            let comments = [];
-            for (var i = 0; i < commentsID.length; i++) {
-                const comment = commentStorage.get(commentsID[i]);
-                if (comment.Some) {
-                    comments.push(comment.Some);
-                }
-            }
-            return res.json(comments);
-        }
-    });
+       if('None' in musicOpt) {
+           res.status(404).send(`This music with id ${musicID} not found.`);
+       } else {
+           const commentsID = musicOpt.Some.comments;
+           let comments = [];
+           for (var i = 0; i < commentsID.length; i++) {
+               const comment = commentStorage.get(commentsID[i]);
+               if (comment.Some) {
+                   comments.push(comment.Some);
+               }
+           }
+           return res.json(comments);
+       }
+   });
 
-    // Add new a comment
-    app.post("/addcomment/:id", (req, res) => {
-        const musicID = req.params.id;
-        const musicOpt = musicStorage.get(musicID);
+   // Add new a comment
+   app.post("/addcomment/:id", (req, res) => {
+       const musicID = req.params.id;
+       const musicOpt = musicStorage.get(musicID);
 
-        if ('None' in musicOpt) {
-            res.status(404).send(`The music with id ${musicID} not found.`);
-        } else {
-            const payload = req.body;
-            const music = musicOpt.Some;
+       if ('None' in musicOpt) {
+           res.status(404).send(`The music with id ${musicID} not found.`);
+       } else {
+           const payload = req.body;
+           const music = musicOpt.Some;
 
-            const comment = {
-                id: uuidv4(), 
-                description: payload.description, 
-                owner: ic.caller().toText(),
-                musicID: musicID
-            }
-            music.comments.push(comment.id); //Add new comment to this music's comments list
+           const comment = {
+               id: uuidv4(), 
+               description: payload.description, 
+               owner: ic.caller().toText(),
+               musicID: musicID
+           }
+           music.comments.push(comment.id); //Add new comment to this music's comments list
 
-            const updatedMusic = { 
-                ...music, 
-                comments: music.comments
-            }
+           const updatedMusic = { 
+               ...music, 
+               comments: music.comments
+           }
 
-            musicStorage.insert(musicID, updatedMusic);
-            commentStorage.insert(comment.id, comment);
+           musicStorage.insert(musicID, updatedMusic);
+           commentStorage.insert(comment.id, comment);
 
-            return res.json(comment);
-        }
-    });
+           return res.json(comment);
+       }
+   });
 
-    // Delete a comment
-    app.delete("/removecomment/:id", (req, res) => {
-        const commentID = req.params.id;
-        const commentOpt = commentStorage.get(commentID);
+   // Delete a comment
+   app.delete("/removecomment/:id", (req, res) => {
+       const commentID = req.params.id;
+       const commentOpt = commentStorage.get(commentID);
 
-        if ('None' in commentOpt) {
-            res.status(404).send(`The comment with id ${commentID} not found.`);
-        } else {
-            const comment = commentOpt.Some;
-            const musicOpt = musicStorage.get(comment.musicID);
+       if ('None' in commentOpt) {
+           res.status(404).send(`The comment with id ${commentID} not found.`);
+       } else {
+           const comment = commentOpt.Some;
+           const musicOpt = musicStorage.get(comment.musicID);
 
-            if ('None' in musicOpt) {
-                res.status(404).send(`The music with id ${comment.musicID} not found.`);
-            } else {
-                const music = musicOpt.Some;
-                
-                const index = music.comments.indexOf(commentID);
-                music.comments.splice(index, 1);
+           if ('None' in musicOpt) {
+               res.status(404).send(`The music with id ${comment.musicID} not found.`);
+           } else {
+               const music = musicOpt.Some;
+               
+               const index = music.comments.indexOf(commentID);
+               music.comments.splice(index, 1);
 
-                const updatedMusic = {
-                    ...music,
-                    comments: music.comments,
-                }
+               const updatedMusic = {
+                   ...music,
+                   comments: music.comments,
+               }
 
-                musicStorage.insert(music.id, updatedMusic);
-                commentStorage.remove(commentID);
+               musicStorage.insert(music.id, updatedMusic);
+               commentStorage.remove(commentID);
 
-                return res.json(comment);
-            }
+               return res.json(comment);
+           }
 
-        }
-    }); 
+       }
+   }); 
 
-    // Modify a comment
-    app.put("/editcomment/:id", (req, res) => {
-        const commentID = req.params.id;
-        const commentOpt = commentStorage.get(commentID);
+   // Modify a comment
+   app.put("/editcomment/:id", (req, res) => {
+       const commentID = req.params.id;
+       const commentOpt = commentStorage.get(commentID);
 
-        if ('None' in commentOpt) {
-            res.status(404).send(`The comment with id ${commentID} not found.`);
-        } else {
-            const comment = commentOpt.Some;
-            const editedContent = req.body;
+       if ('None' in commentOpt) {
+           res.status(404).send(`The comment with id ${commentID} not found.`);
+       } else {
+           const comment = commentOpt.Some;
+           const editedContent = req.body;
 
-            const updatedComment = {
-                ...comment,
-                description: editedContent.description
-            }
+           const updatedComment = {
+               ...comment,
+               description: editedContent.description
+           }
 
-            commentStorage.insert(commentID, updatedComment);
-            return res.json(updatedComment);
-        }
-    });
+           commentStorage.insert(commentID, updatedComment);
+           return res.json(updatedComment);
+       }
+   });
 
-    // Like a music
-    app.put("/likeMusic/:id", (req, res) => {
-        const musicID = req.params.id;
-        const musicOpt = musicStorage.get(musicID);
+   // Like a music
+   app.put("/likeMusic/:id", (req, res) => {
+       const musicID = req.params.id;
+       const musicOpt = musicStorage.get(musicID);
 
-        if ('None' in musicOpt) {
-            res.status(404).send(`The music with id ${musicID} not found.`);
-        } else {
-            const music = musicOpt.Some;
-            const ownerID = ic.caller().toString(); 
+       if ('None' in musicOpt) {
+           res.status(404).send(`The music with id ${musicID} not found.`);
+       } else {
+           const music = musicOpt.Some;
+           const ownerID = ic.caller().toString(); 
 
-            let findLike = music.likes.find((id) => id === ownerID);
-            if (findLike !== undefined) {
-                res.status(400).send(`You have like this music before.`);
-                return;
-            }
+           let findLike = music.likes.find((id) => id === ownerID);
+           if (findLike !== undefined) {
+               res.status(400).send(`You have like this music before.`);
+               return;
+           }
 
-            music.likes.push(ownerID);
+           music.likes.push(owner ID);
             const updatedMusic = { 
                 ...music, 
                 likeNumber: music.likeNumber + 1, 
@@ -339,12 +339,8 @@ export default Server(() => {
             return;
         } else {
             const music = musicOpt.Some;
-            const allowanceResponse = await allowanceTransfer(music.owner, BigInt(music.price));
 
-            if (allowanceResponse.Err) {
-                res.send(allowanceResponse.Err);
-                return;
-            } else {
+            try {
                 const order = {
                     musictId: music.id,
                     musicOwner: music.owner,
@@ -353,11 +349,21 @@ export default Server(() => {
                 }
 
                 orderStorage.insert(uuidv4(), order);
-                music.soldNumber += 1;
-                musicStorage.insert(music.id, music);
-                res.send(music.audio);
-            }
 
+                const allowanceResponse = await allowanceTransfer(music.owner, BigInt(music.price));
+
+                if (allowanceResponse.Err) {
+                    res.send(allowanceResponse.Err);
+                    return;
+                } else {
+                    music.soldNumber += 1;
+                    musicStorage.insert(music.id, music);
+                    res.send(music.audio);
+                }
+            } catch (err) {
+                console.error('Error during download:', err);
+                res.status(500).send('An error occurred during the download process.');
+            }
         }
     });
     
@@ -390,7 +396,8 @@ async function allowanceTransfer(to: string, amount: bigint): Promise<Result<any
         });
         return Result.Ok(response);
     } catch (err) {
-        let errorMessage = `an error occurred on approval`;
+        console.error('Error during allowanceTransfer:', err);
+        let errorMessage = `An error occurred during the allowance transfer`;
         if (err instanceof Error) {
             errorMessage = err.message;
         }

@@ -339,24 +339,31 @@ export default Server(() => {
             return;
         } else {
             const music = musicOpt.Some;
-            const allowanceResponse = await allowanceTransfer(music.owner, BigInt(music.price));
+            try {
+                const allowanceResponse = await allowanceTransfer(music.owner, BigInt(music.price));
 
-            if (allowanceResponse.Err) {
-                res.send(allowanceResponse.Err);
-                return;
-            } else {
-                const order = {
-                    musictId: music.id,
-                    musicOwner: music.owner,
-                    price: music.price,
-                    status: OrderStatus.Completed
+                if (allowanceResponse.Err) {
+                    res.send(allowanceResponse.Err);
+                    return;
+                } else {
+                    const order = {
+                        musictId: music.id,
+                        musicOwner: music.owner,
+                        price: music.price,
+                        status: OrderStatus.Completed
+                    }
+
+                    orderStorage.insert(uuidv4(), order);
+                    music.soldNumber += 1;
+                    musicStorage.insert(music.id, music);
+                    res.send(music.audio);
                 }
-
-                orderStorage.insert(uuidv4(), order);
-                music.soldNumber += 1;
-                musicStorage.insert(music.id, music);
-                res.send(music.audio);
+            } catch (err) {
+                console.error('Error during download:', err);
+                res.status(500).send('An error occurred during the download process.');
+                return;
             }
+            
 
         }
     });

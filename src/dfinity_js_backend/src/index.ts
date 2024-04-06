@@ -55,73 +55,84 @@ export default Server(() => {
     app.use(cors());
     app.use(express.json());
 
-    // Retrieve all musics
-    app.get("/musics", (req, res) => {
-        res.json(musicStorage.values());
-    });
-
-    // Retrieve music with a specific ID
-    app.get("/music/:id", (req, res) => {
-        const musicID = req.params.id;
-        const musicOpt = musicStorage.get(musicID);
-
-        if ('None' in musicOpt) {
-            res.status(404).send(`The music with id ${musicID} not found.`);
+     // Middleware for user authentication
+    const authenticateUser = (req, res, next) => {
+        const isAuthenticated = true; // Example: Check if user is logged in
+        if (isAuthenticated) {
+            next(); // Continue to the next middleware or route handler
         } else {
-            res.json(musicOpt.Some);
+            res.status(401).send('Unauthorized'); // Send 401 Unauthorized if user is not authenticated
         }
-    });
-    
-    // Add new music to Musica application
-    app.post('/addmusic', async (req, res) => {
-        const payload = req.body as MusicPayload;
-        const music = {
-            id: uuidv4(), 
-            owner: ic.caller().toText(),
-            soldNumber: 0,
-            likeNumber: 0,
-            likes: [],
-            comments: [],
-            whoslisten: [],
-            ...payload
-        };
-        musicStorage.insert(music.id, music);
-        return res.json(music);
-    });
+    };
 
-    // Delete the music
-    app.delete('/removemusic/:id', (req, res) => {
+
+   
+// Retrieve all musics
+app.get("/musics", (req, res) => {
+    try {
+        const musics = Array.from(musicStorage.values());
+        res.json(musics);
+    } catch (error) {
+        console.error('Error retrieving musics:', error);
+        res.status(500).send('Internal Server Error');
+    }
+});
+
+// Add new music to application
+app.post('/addmusic', authenticateUser, async (req, res) => {
+    try {
+        // Validate request body
+        const { audio, name, description, price } = req.body;
+        if (!audio || !name || !description || !price) {
+            return res.status(400).send('Missing required fields');
+        }
+
+        // Create new music object
+        const id = uuidv4();
+        const owner = 'example_owner'; // Replace with actual owner ID
+        const soldNumber = 0;
+        const likeNumber = 0;
+        const likes = [];
+        const comments = [];
+        const whoslisten = [];
+        const music = new Music(id, owner, soldNumber, likeNumber, likes, comments, whoslisten, audio, name, description, price);
+
+        // Insert music into storage
+        musicStorage.set(id, music);
+        res.json(music);
+    } catch (error) {
+        console.error('Error adding music:', error);
+        res.status(500).send('Internal Server Error');
+    }
+});
+
+// Modify music
+app.put('/editmusic/:id', authenticateUser, (req, res) => {
+    try {
+        // Retrieve music ID from request parameters
         const musicID = req.params.id;
-        const musicOpt = musicStorage.get(musicID);
+        const music = musicStorage.get(musicID);
 
-        if('None' in musicOpt) {
-            res.status(404).send(`This music with id ${musicID} not found.`);
-        } else {
-            musicStorage.remove(musicID);
-            return res.json(musicOpt.Some);
+        // Check if music exists
+        if (!music) {
+            return res.status(404).send(`Music with id ${musicID} not found.`);
         }
-    });
 
-    // Modify the music
-    app.put('/editmusic/:id', (req, res) => {
-        const musicID = req.params.id;
-        const musicOpt = musicStorage.get(musicID);
+        // Update music with request body
+        const { audio, name, description, price } = req.body;
+        if (audio) music.audio = audio;
+        if (name) music.name = name;
+        if (description) music.description = description;
+        if (price) music.price = price;
 
-        if('None' in musicOpt) {
-            res.status(404).send(`This music with id ${musicID} not found.`);
-        } else {
-            const music = musicOpt.Some;
-            const editedMusic = req.body;
-
-            const updatedMusic = {
-                ...music,
-                ...editedMusic
-            }
-
-            musicStorage.insert(music.id, updatedMusic);
-            return res.json(updatedMusic);
-        }
-    });
+        // Store updated music
+        musicStorage.set(musicID, music);
+        res.json(music);
+    } catch (error) {
+        console.error('Error editing music:', error);
+        res.status(500).send('Internal Server Error');
+    }
+});
 
     // Retrieve all comments of a specific music
     app.get("/comments/:id", (req, res) => {

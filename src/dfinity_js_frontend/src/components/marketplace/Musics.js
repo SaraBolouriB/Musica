@@ -1,18 +1,20 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { toast } from "react-toastify";
 import AddMusic from "./AddMusic";
-import EditMusic from "./EdditMusic";
+import EditMusic from "./Edit&DelMusic";
+import EditComment from "./Edit&DelComment";
 import Music from "./Music";
 import Loader from "../utils/Loader";
 import { Row } from "react-bootstrap";
 import { NotificationSuccess, NotificationError } from "../utils/Notifications";
-import {NotificationContainer, NotificationManager} from 'react-notifications';
 import {
   getMusics as getMusicList,
   createMusic, modifyMusic, deleteMusic, 
   createComment,
   like, unlike,
-  downloadMusic, play
+  downloadMusic, play,
+  deleteComment,
+  modifyComment
 } from "../../utils/marketplace";
 
 
@@ -109,6 +111,33 @@ const Musics = (tokenSymbol) => {
     }
   };
 
+  const editComment = async (data) => {
+    try {
+      setLoading(true);
+      const id = data.id;
+      delete data['id'];
+      if (Object.keys(data).length === 0) {
+        deleteComment(id).then(resp => {
+          console.log(resp);
+          getMusics();
+        });
+        toast(<NotificationSuccess text="Music modified successfully." />);
+      } else {
+        console.log(data);
+        modifyComment(id, data).then(resp => {
+          console.log(resp);
+          getMusics();
+        });
+        toast(<NotificationSuccess text="Music removed successfully." />);
+      }     
+    } catch (error) {
+      console.log({ error });
+      toast(<NotificationError text="Failed to process your request." />);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const likeMusic = async (id) => {
     try {
       setLoading(true);
@@ -143,10 +172,9 @@ const Musics = (tokenSymbol) => {
   const playMusic = async (id) => {
     try {
       setLoading(true);
-      play(id).then(res => {
-         console.log(res);
-         toast(<NotificationError text={res} />);
-       });
+      await play(id).then(res => {
+         console.log(res.message);
+      });
     } catch (error) {
       console.log(error);
       toast(<NotificationError text={error} />);
@@ -167,6 +195,7 @@ const Musics = (tokenSymbol) => {
             <h1 className="fs-4 fw-bold mb-0">Musics Menu</h1>
             <AddMusic save={addMusic} />
             <EditMusic save={edditMusic} />
+            <EditComment save={editComment} />
           </div>
           <Row xs={1} sm={2} lg={3} className="g-3  mb-5 g-xl-4 g-xxl-5">
             {musics.map((_music) => (

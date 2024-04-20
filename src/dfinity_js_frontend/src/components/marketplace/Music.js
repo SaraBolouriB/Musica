@@ -92,7 +92,7 @@ const Music = ({ tokemMetadata, music, buy, addComment, likeMusic, unlikeMusic, 
           </Button>
           <br/>
           {comments.map((_comment) => (
-              <p>{_comment.description}</p>
+              <p>{_comment.description} <b>:ID {_comment.id}</b></p>
           ))}
           <Stack direction="horizontal" gap={2}>
             <Form>

@@ -32,6 +32,14 @@ export async function createComment(id, data) {
   return httpClient.POST({path: `/addcomment/${id}`, data});
 }
 
+export async function modifyComment(id, data) {
+  return httpClient.PUT({path: `/editcomment/${id}`, data});
+}
+
+export async function deleteComment(id) {
+  return httpClient.DELETE({path: `/removecomment/${id}`});
+}
+
 // OTHER APIs
 export async function getAddressFromPrincipal(principalHex) {
   return httpClient.GET({path: `/principal-to-address/${principalHex}`});

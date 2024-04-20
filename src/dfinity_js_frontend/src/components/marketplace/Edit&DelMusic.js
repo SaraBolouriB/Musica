@@ -33,7 +33,7 @@ const EditMusic = ({ save }) => {
           <Modal.Body>
             <FloatingLabel
               controlId="inputName"
-              label="Please enter the music ID you want to modify."
+              label="Music ID"
               className="mb-3"
             >
               <Form.Control
@@ -41,7 +41,7 @@ const EditMusic = ({ save }) => {
                 onChange={(e) => {
                   setID(e.target.value);
                 }}
-                placeholder="Please enter the music ID you want to modify."
+                placeholder="Music ID"
               />
             </FloatingLabel>
             <FloatingLabel

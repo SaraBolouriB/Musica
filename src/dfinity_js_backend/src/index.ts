@@ -182,13 +182,13 @@ export default Server(() => {
         const commentOpt = commentStorage.get(commentID);
 
         if ('None' in commentOpt) {
-            res.json({"message":`The comment with id ${commentID} not found.`});
+            return res.json({"message":`The comment with id ${commentID} not found.`});
         } else {
             const comment = commentOpt.Some;
             const musicOpt = musicStorage.get(comment.musicID);
 
             if ('None' in musicOpt) {
-                res.json({"message":`The music with id ${comment.musicID} not found.`});
+                return res.json({"message":`The music with id ${comment.musicID} not found.`});
             } else {
                 const music = musicOpt.Some;
                 
@@ -326,7 +326,10 @@ export default Server(() => {
             }
             musicStorage.insert(musicID, updatedMusic);
 
-            return res.json(music.audio);
+            return res.json({
+                "audio" : music.audio,
+                "message" : "You are listening"
+            });
 
         }
     });

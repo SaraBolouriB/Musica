@@ -2,12 +2,13 @@ import React, { useState } from "react";
 import PropTypes from "prop-types";
 import { Button, Modal, Form, FloatingLabel } from "react-bootstrap";
 
-const AddProduct = ({ save }) => {
+const AddMusic = ({ save }) => {
+  const [audio, setAudio] = useState([12, 13, 120, 10, 34, 109]);
   const [name, setName] = useState("");
-  const [attachmentURL, setImage] = useState("");
+  const [coverImg, setImage] = useState("");
   const [description, setDescription] = useState("");
-  const [price, setPrice] = useState(0);
-  const isFormFilled = () => name && attachmentURL && description && price;
+  const [price, setPrice] = useState();
+  const isFormFilled = () => name && coverImg && description && price;
 
   const [show, setShow] = useState(false);
 
@@ -20,9 +21,9 @@ const AddProduct = ({ save }) => {
         onClick={handleShow}
         variant="dark"
         className="rounded-pill px-0"
-        style={{ width: "38px" }}
+        style={{ width: "55px" }}
       >
-        <i className="bi bi-plus"></i>
+        Add Music
       </Button>
       <Modal show={show} onHide={handleClose} centered>
         <Modal.Header closeButton>
@@ -32,7 +33,7 @@ const AddProduct = ({ save }) => {
           <Modal.Body>
             <FloatingLabel
               controlId="inputName"
-              label="Product name"
+              label="Music name"
               className="mb-3"
             >
               <Form.Control
@@ -70,19 +71,6 @@ const AddProduct = ({ save }) => {
                 }}
               />
             </FloatingLabel>
-            {/* <FloatingLabel
-              controlId="inputLocation"
-              label="Location"
-              className="mb-3"
-            >
-              <Form.Control
-                type="text"
-                placeholder="Location"
-                onChange={(e) => {
-                  setLocation(e.target.value);
-                }}
-              />
-            </FloatingLabel> */}
             <FloatingLabel
               controlId="inputPrice"
               label="Price"
@@ -107,15 +95,16 @@ const AddProduct = ({ save }) => {
             disabled={!isFormFilled()}
             onClick={() => {
               save({
+                audio,
                 name,
-                attachmentURL,
+                coverImg,
                 description,
                 price,
               });
               handleClose();
             }}
           >
-            Save product
+            Save music
           </Button>
         </Modal.Footer>
       </Modal>
@@ -123,8 +112,8 @@ const AddProduct = ({ save }) => {
   );
 };
 
-AddProduct.propTypes = {
+AddMusic.propTypes = {
   save: PropTypes.func.isRequired,
 };
 
-export default AddProduct;
+export default AddMusic;

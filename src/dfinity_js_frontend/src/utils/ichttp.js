@@ -19,6 +19,14 @@ class IcHttp {
         return await this.#doRequest(req.path, "POST", req.params, req.data);
     }
 
+    async PUT(req) {
+        return await this.#doRequest(req.path, "PUT", req.params, req.data);
+    }
+
+    async DELETE(req) {
+        return await this.#doRequest(req.path, "DELETE", req.params, req.data);
+    }
+
     async #doRequest(path, method, params, data) {
         try {
             const queryParams = new URLSearchParams(params ? params : {});
@@ -35,8 +43,8 @@ class IcHttp {
                     });
                     return this.#parseResponse(response);
                 case "POST":
-                case "PUT":
                 case "DELETE":
+                case "PUT":
                     const body = data ? this.#encoder.encode(JSON.stringify(data)) : [];
                     response = await this.#agent.http_request_update({
                         url,

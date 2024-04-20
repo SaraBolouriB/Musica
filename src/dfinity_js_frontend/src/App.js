@@ -1,6 +1,6 @@
 import React, { useEffect, useCallback, useState } from "react";
 import { Container, Nav } from "react-bootstrap";
-import Products from "./components/marketplace/Products";
+import Musics from "./components/marketplace/Musics";
 import "./App.css";
 import Wallet from "./components/Wallet";
 import coverImg from "./assets/img/sandwich.jpg";
@@ -11,14 +11,14 @@ import { isAuthenticated, getPrincipalText } from "./utils/auth";
 import { tokenBalance, tokenSymbol } from "./utils/icrc2_ledger";
 import { icpBalance } from "./utils/ledger";
 import { getAddressFromPrincipal } from "./utils/marketplace";
-
+import { symbol } from "prop-types";
 
 const App = function AppWrapper() {
   const [authenticated, setAuthenticated] = useState(false);
   const [principal, setPrincipal] = useState('');
   const [icrcBalance, setICRCBalance] = useState('');
   const [balance, setICPBalance] = useState('');
-  const [symbol, setSymbol] = useState('');
+  const [symbol, setSymbol] = useState('ICP');
   const [address, setAddress] = useState('');
 
   const getICRCBalance = useCallback(async () => {
@@ -33,9 +33,9 @@ const App = function AppWrapper() {
     }
   });
 
-  useEffect(async () => {
-    setSymbol(await tokenSymbol());
-  }, [setSymbol]);
+  // useEffect(async () => {
+  //   setSymbol(await tokenSymbol());
+  // }, [setSymbol]);
 
   useEffect(async () => {
     setAuthenticated(await isAuthenticated());
@@ -61,31 +61,52 @@ const App = function AppWrapper() {
   }, [getICPBalance]);
 
   return (
-    <>
-    <Notification />
-      {authenticated ? (
-        <Container fluid="md">
-          <Nav className="justify-content-end pt-3 pb-5">
-            <Nav.Item>
-              <Wallet
-                address={address}
-                principal={principal}
-                icpBalance={balance}
-                icrcBalance={icrcBalance}
-                symbol={symbol}
-                isAuthenticated={authenticated}
-                destroy={destroy}
-              />
-            </Nav.Item>
-          </Nav>
-          <main>
-            <Products tokenSymbol={symbol} />
-          </main>
-        </Container>
-      ) : (
-        <Cover name="Street Food" login={login} coverImg={coverImg} />
-      )}
-    </>
+    <Container fluid="md">
+      <Nav className="justify-content-end pt-3 pb-5">
+        <Nav.Item>
+          <Wallet
+            address={address}
+            principal={principal}
+            icpBalance={balance}
+            icrcBalance={icrcBalance}
+            symbol={symbol}
+            isAuthenticated={authenticated}
+            destroy={destroy}
+          />
+        </Nav.Item>
+      </Nav>
+      <main>
+        <Musics tokenSymbol={symbol} />
+      </main>
+    </Container>
+
+
+    // <>
+    // <Notification />
+
+    //   {authenticated ? (
+    //     <Container fluid="md">
+    //       <Nav className="justify-content-end pt-3 pb-5">
+    //         <Nav.Item>
+    //           <Wallet
+    //             address={address}
+    //             principal={principal}
+    //             icpBalance={balance}
+    //             icrcBalance={icrcBalance}
+    //             symbol={symbol}
+    //             isAuthenticated={authenticated}
+    //             destroy={destroy}
+    //           />
+    //         </Nav.Item>
+    //       </Nav>
+    //       <main>
+    //         <Products tokenSymbol={symbol} />
+    //       </main>
+    //     </Container>
+    //   ) : (
+    //     <Cover name="Street Food" login={login} coverImg={coverImg} />
+    //   )}
+    // </>
   );
 };
 

@@ -16,6 +16,7 @@ class Music {
     name: string;
     description: string;
     price: number;
+    coverImg: string;
 }
 
 class MusicPayload {
@@ -23,6 +24,7 @@ class MusicPayload {
     name: string;
     description: string;
     price: number;
+    coverImg: string;
 }
 
 class Comment {
@@ -66,7 +68,7 @@ export default Server(() => {
         const musicOpt = musicStorage.get(musicID);
 
         if ('None' in musicOpt) {
-            res.status(404).send(`The music with id ${musicID} not found.`);
+            res.json({"message" : `The music with id ${musicID} not found.`});
         } else {
             res.json(musicOpt.Some);
         }
@@ -95,7 +97,7 @@ export default Server(() => {
         const musicOpt = musicStorage.get(musicID);
 
         if('None' in musicOpt) {
-            res.status(404).send(`This music with id ${musicID} not found.`);
+            res.json({"message": `This music with id ${musicID} not found.`});
         } else {
             musicStorage.remove(musicID);
             return res.json(musicOpt.Some);
@@ -108,7 +110,7 @@ export default Server(() => {
         const musicOpt = musicStorage.get(musicID);
 
         if('None' in musicOpt) {
-            res.status(404).send(`This music with id ${musicID} not found.`);
+            res.json({"message":`This music with id ${musicID} not found.`});
         } else {
             const music = musicOpt.Some;
             const editedMusic = req.body;
@@ -129,7 +131,7 @@ export default Server(() => {
         const musicOpt = musicStorage.get(musicID);
 
         if('None' in musicOpt) {
-            res.status(404).send(`This music with id ${musicID} not found.`);
+            res.json({"message":`This music with id ${musicID} not found.`});
         } else {
             const commentsID = musicOpt.Some.comments;
             let comments = [];
@@ -149,7 +151,7 @@ export default Server(() => {
         const musicOpt = musicStorage.get(musicID);
 
         if ('None' in musicOpt) {
-            res.status(404).send(`The music with id ${musicID} not found.`);
+            res.json({"message":`The music with id ${musicID} not found.`});
         } else {
             const payload = req.body;
             const music = musicOpt.Some;
@@ -180,13 +182,13 @@ export default Server(() => {
         const commentOpt = commentStorage.get(commentID);
 
         if ('None' in commentOpt) {
-            res.status(404).send(`The comment with id ${commentID} not found.`);
+            res.json({"message":`The comment with id ${commentID} not found.`});
         } else {
             const comment = commentOpt.Some;
             const musicOpt = musicStorage.get(comment.musicID);
 
             if ('None' in musicOpt) {
-                res.status(404).send(`The music with id ${comment.musicID} not found.`);
+                res.json({"message":`The music with id ${comment.musicID} not found.`});
             } else {
                 const music = musicOpt.Some;
                 
@@ -213,7 +215,7 @@ export default Server(() => {
         const commentOpt = commentStorage.get(commentID);
 
         if ('None' in commentOpt) {
-            res.status(404).send(`The comment with id ${commentID} not found.`);
+            res.json({"message":`The comment with id ${commentID} not found.`});
         } else {
             const comment = commentOpt.Some;
             const editedContent = req.body;
@@ -234,14 +236,14 @@ export default Server(() => {
         const musicOpt = musicStorage.get(musicID);
 
         if ('None' in musicOpt) {
-            res.status(404).send(`The music with id ${musicID} not found.`);
+            res.json({"message":`The music with id ${musicID} not found.`});
         } else {
             const music = musicOpt.Some;
             const ownerID = ic.caller().toString(); 
 
             let findLike = music.likes.find((id) => id === ownerID);
             if (findLike !== undefined) {
-                res.status(400).send(`You have like this music before.`);
+                res.json({"message":`You have like this music before.`});
                 return;
             }
 
@@ -263,14 +265,14 @@ export default Server(() => {
         const musicOpt = musicStorage.get(musicID);
 
         if ('None' in musicOpt) {
-            res.status(404).send(`The music with id ${musicID} not found.`);
+            res.json({"message":`The music with id ${musicID} not found.`});
         } else {
             const music = musicOpt.Some;
             const ownerID = ic.caller().toString(); 
 
             let findLike = music.likes.find((id) => id === ownerID);
             if (findLike === undefined) {
-                res.status(400).send(`The like does not exist.`);
+                res.json({"message":`The like does not exist.`});
                 return;
             } 
             
@@ -293,7 +295,7 @@ export default Server(() => {
         const musicOpt = musicStorage.get(musicID);
 
         if ('None' in musicOpt) {
-            res.status(404).send(`The music with id ${musicID} not found.`);
+            res.json({"message":`The music with id ${musicID} not found.`});
         } else {
             const numLikes = musicOpt.Some.likeNumber;
             res.json(numLikes);
@@ -306,7 +308,7 @@ export default Server(() => {
         const musicOpt = musicStorage.get(musicID);
 
         if ('None' in musicOpt) {
-            res.status(404).send(`The music with id ${musicID} not found.`);
+            return res.json({"message":`The music with id ${musicID} not found.`});
         } else {
             const music = musicOpt.Some;
             const ownerID = ic.caller().toString();
@@ -314,8 +316,7 @@ export default Server(() => {
             const findListener = music.whoslisten.find((listener) => listener === ownerID);
 
             if (findListener !== undefined) {
-                res.status(400).send(`You can not listen to music again. Please download it.`);
-                return;
+                return res.json({"message":"You can not listen to music again. Please download it."});
             }
 
             music.whoslisten.push(ownerID);
@@ -335,7 +336,7 @@ export default Server(() => {
         const musicOpt = musicStorage.get(req.body.musicId);
 
         if ('None' in musicOpt) {
-            res.status(404).send(`The music with id ${req.body.musicId} not found.`);
+            res.json({"message":`The music with id ${req.body.musicId} not found.`});
             return;
         } else {
             const music = musicOpt.Some;
@@ -356,11 +357,11 @@ export default Server(() => {
                     orderStorage.insert(uuidv4(), order);
                     music.soldNumber += 1;
                     musicStorage.insert(music.id, music);
-                    res.send(music.audio);
+                    return res.json(music.audio);
                 }
             } catch (err) {
                 console.error('Error during download:', err);
-                res.status(500).send('An error occurred during the download process.');
+                res.json({"message":"An error occurred during the download process."});
                 return;
             }
             
@@ -372,7 +373,7 @@ export default Server(() => {
         const principal = Principal.fromText(req.params.principalHex);
         res.json({ account: hexAddressFromPrincipal(principal, 0) });
     });
-    
+
     app.use(express.static('/dist'));
 
     return app.listen();

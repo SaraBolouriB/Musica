@@ -3,23 +3,19 @@ import { Container, Nav } from "react-bootstrap";
 import Musics from "./components/marketplace/Musics";
 import "./App.css";
 import Wallet from "./components/Wallet";
-import coverImg from "./assets/img/sandwich.jpg";
-import { login, logout as destroy } from "./utils/auth";
-import Cover from "./components/utils/Cover";
-import { Notification } from "./components/utils/Notifications";
+import { logout as destroy } from "./utils/auth";
 import { isAuthenticated, getPrincipalText } from "./utils/auth";
-import { tokenBalance, tokenSymbol } from "./utils/icrc2_ledger";
+import { tokenBalance} from "./utils/icrc2_ledger";
 import { icpBalance } from "./utils/ledger";
 import { getAddressFromPrincipal } from "./utils/marketplace";
-import { symbol } from "prop-types";
 
 const App = function AppWrapper() {
   const [authenticated, setAuthenticated] = useState(false);
   const [principal, setPrincipal] = useState('');
   const [icrcBalance, setICRCBalance] = useState('');
   const [balance, setICPBalance] = useState('');
-  const [symbol, setSymbol] = useState('ICP');
   const [address, setAddress] = useState('');
+  const symbol = 'ICP';
 
   const getICRCBalance = useCallback(async () => {
     if (authenticated) {
@@ -32,10 +28,6 @@ const App = function AppWrapper() {
       setICPBalance(await icpBalance());
     }
   });
-
-  // useEffect(async () => {
-  //   setSymbol(await tokenSymbol());
-  // }, [setSymbol]);
 
   useEffect(async () => {
     setAuthenticated(await isAuthenticated());
@@ -79,34 +71,6 @@ const App = function AppWrapper() {
         <Musics tokenSymbol={symbol} />
       </main>
     </Container>
-
-
-    // <>
-    // <Notification />
-
-    //   {authenticated ? (
-    //     <Container fluid="md">
-    //       <Nav className="justify-content-end pt-3 pb-5">
-    //         <Nav.Item>
-    //           <Wallet
-    //             address={address}
-    //             principal={principal}
-    //             icpBalance={balance}
-    //             icrcBalance={icrcBalance}
-    //             symbol={symbol}
-    //             isAuthenticated={authenticated}
-    //             destroy={destroy}
-    //           />
-    //         </Nav.Item>
-    //       </Nav>
-    //       <main>
-    //         <Products tokenSymbol={symbol} />
-    //       </main>
-    //     </Container>
-    //   ) : (
-    //     <Cover name="Street Food" login={login} coverImg={coverImg} />
-    //   )}
-    // </>
   );
 };
 
